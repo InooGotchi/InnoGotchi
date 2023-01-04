@@ -1,7 +1,7 @@
-﻿using CleanArchitecture.Application.Common.Models;
+﻿using InnoGotchi.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace CleanArchitecture.Infrastructure.Identity;
+namespace InnoGotchi.Infrastructure.Identity;
 
 public static class IdentityResultExtensions
 {

@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.Common.Exceptions;
+﻿namespace InnoGotchi.Application.Common.Exceptions;
 
 public class NotFoundException : Exception
 {

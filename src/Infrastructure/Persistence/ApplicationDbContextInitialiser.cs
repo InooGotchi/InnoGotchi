@@ -1,10 +1,10 @@
-﻿using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Infrastructure.Identity;
+﻿using InnoGotchi.Infrastructure.Identity;
+using InnoGotchi.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace CleanArchitecture.Infrastructure.Persistence;
+namespace InnoGotchi.Infrastructure.Persistence;
 
 public class ApplicationDbContextInitialiser
 {
@@ -74,21 +74,24 @@ public class ApplicationDbContextInitialiser
 
         // Default data
         // Seed, if necessary
-        if (!_context.TodoLists.Any())
-        {
-            _context.TodoLists.Add(new TodoList
-            {
-                Title = "Todo List",
-                Items =
-                {
-                    new TodoItem { Title = "Make a todo list 📃" },
-                    new TodoItem { Title = "Check off the first item ✅" },
-                    new TodoItem { Title = "Realise you've already done two things on the list! 🤯"},
-                    new TodoItem { Title = "Reward yourself with a nice, long nap 🏆" },
-                }
-            });
+        // Add InnoGotchi default data if needed
 
-            await _context.SaveChangesAsync();
-        }
+        /// LEAVED AS EXAMPLE
+        //if (!_context.TodoLists.Any())
+        //{
+        //    _context.TodoLists.Add(new TodoList
+        //    {
+        //        Title = "Todo List",
+        //        Items =
+        //        {
+        //            new TodoItem { Title = "Make a todo list 📃" },
+        //            new TodoItem { Title = "Check off the first item ✅" },
+        //            new TodoItem { Title = "Realise you've already done two things on the list! 🤯"},
+        //            new TodoItem { Title = "Reward yourself with a nice, long nap 🏆" },
+        //        }
+        //    });
+
+        //    await _context.SaveChangesAsync();
+        //}
     }
 }
