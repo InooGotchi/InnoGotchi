@@ -1,6 +1,7 @@
 ﻿using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Infrastructure.Identity;
 using InnoGotchi.Infrastructure.Persistence;
+using InnoGotchi.Infrastructure.Persistence.Base;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-   
+
 
         if (configuration.GetValue<bool>("UseInMemoryDatabase"))
         {
@@ -39,12 +40,10 @@ public static class ConfigureServices
             .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
         services.AddTransient<IIdentityService, IdentityService>();
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         services.AddAuthentication()
             .AddIdentityServerJwt();
-
-        services.AddAuthorization(options =>
-            options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator")));
 
         return services;
     }
