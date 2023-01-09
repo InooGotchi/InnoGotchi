@@ -80,6 +80,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         var createdEntity = await _dbSet.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return createdEntity;
@@ -89,6 +90,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         var updatedEntity = _dbSet.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
         return updatedEntity;
@@ -98,6 +100,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         _dbSet.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
