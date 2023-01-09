@@ -1,44 +1,104 @@
-﻿using InnoGotchi.Domain.Common;
+﻿using System.Linq.Expressions;
+using InnoGotchi.Domain.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace InnoGotchi.Infrastructure.Persistence.Base;
-public class Repository<T> : IRepository<T> where T : BaseEntity
+
+public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {
     private readonly ApplicationDbContext _context;
-    private readonly DbSet<T> _entities;
+    private readonly DbSet<TEntity> _dbSet;
+    
     public Repository(ApplicationDbContext context)
     {
         this._context = context;
-        _entities = context.Set<T>();
+        _dbSet = context.Set<TEntity>();
     }
-    public IEnumerable<T> GetAll() => _entities.AsEnumerable();
 
-    public T? Get(Guid id) => _entities.SingleOrDefault(s => s.Id == id);
+    public async Task<IList<TEntity>> GetAllAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        bool disableTracking = true)
+    {
+        IQueryable<TEntity> query = _dbSet;
 
-    public void Insert(T entity)
-    {
-        if (entity == null)
+        if (disableTracking)
         {
-            throw new ArgumentNullException($"Cannot insert {entity}");
+            query = query.AsNoTracking();
         }
-        _entities.Add(entity);
-        _context.SaveChanges();
+
+        if (include is not null)
+        {
+            query = include(query);
+        }
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        if (orderBy is not null)
+        {
+            return await orderBy(query).ToListAsync();
+        }
+
+        return await query.ToListAsync();
     }
-    public void Update(T entity)
+
+    public async Task<TEntity?> GetFirstOrDefaultAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
+        bool disableTracking = true)
     {
-        if (entity == null)
+        IQueryable<TEntity> query = _dbSet;
+
+        if (disableTracking)
         {
-            throw new ArgumentNullException($"Cannot update {entity}");
+            query = query.AsNoTracking();
         }
-        _context.SaveChanges();
+
+        if (include is not null)
+        {
+            query = include(query);
+        }
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return orderBy is not null
+            ? await orderBy(query).FirstOrDefaultAsync()
+            : await query.FirstOrDefaultAsync();
     }
-    public void Delete(T entity)
+
+    public async ValueTask<EntityEntry<TEntity>> InsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
     {
-        if (entity == null)
-        {
-            throw new ArgumentNullException($"Cannot delete {entity}");
-        }
-        _entities.Remove(entity);
-        _context.SaveChanges();
+        var createdEntity = await _dbSet.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+        return createdEntity;
+    }
+
+    public async Task<EntityEntry<TEntity>> UpdateAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
+    {
+        var updatedEntity = _dbSet.Update(entity);
+        await _context.SaveChangesAsync(cancellationToken);
+        return updatedEntity;
+    }
+
+    public async Task DeleteAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
+    {
+        _dbSet.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
