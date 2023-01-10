@@ -1,4 +1,4 @@
-﻿using InnoGotchi.Application.Common.Models;
+﻿using InnoGotchi.Domain.Common;
 using Microsoft.AspNetCore.Identity;
 
 namespace InnoGotchi.Infrastructure.Identity;
