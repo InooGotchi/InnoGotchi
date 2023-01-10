@@ -15,7 +15,6 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
 
     Task<TEntity?> GetFirstOrDefaultAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool disableTracking = true);
     

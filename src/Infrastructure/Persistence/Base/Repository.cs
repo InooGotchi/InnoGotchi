@@ -50,7 +50,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
 
     public async Task<TEntity?> GetFirstOrDefaultAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool disableTracking = true)
     {
@@ -71,9 +70,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
             query = query.Where(predicate);
         }
 
-        return orderBy is not null
-            ? await orderBy(query).FirstOrDefaultAsync()
-            : await query.FirstOrDefaultAsync();
+        return await query.FirstOrDefaultAsync();
     }
 
     public async ValueTask<EntityEntry<TEntity>> InsertAsync(
