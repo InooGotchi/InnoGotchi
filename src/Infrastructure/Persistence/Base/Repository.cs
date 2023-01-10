@@ -65,12 +65,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
             query = include(query);
         }
 
-        if (predicate is not null)
-        {
-            query = query.Where(predicate);
-        }
-
-        return await query.FirstOrDefaultAsync();
+        return predicate is not null 
+            ? await query.FirstOrDefaultAsync(predicate)
+            : await query.FirstOrDefaultAsync();
     }
 
     public async ValueTask<EntityEntry<TEntity>> InsertAsync(
