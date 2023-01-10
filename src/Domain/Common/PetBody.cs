@@ -6,7 +6,6 @@ public class PetBody
     public EyesTypeEnum Eyes { get; set; }
     public MouthTypeEnum Mouth { get; set; }
     public BodyTypeEnum Body { get; set; }
-    public virtual User User { get; set; }
 }
 
 public enum NoseTypeEnum
