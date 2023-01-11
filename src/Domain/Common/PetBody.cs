@@ -2,34 +2,34 @@
 
 public class PetBody
 {
-    public NoseTypeEnum Nose { get; set; }
-    public EyesTypeEnum Eyes { get; set; }
-    public MouthTypeEnum Mouth { get; set; }
-    public BodyTypeEnum Body { get; set; }
+    public NoseType Nose { get; set; }
+    public EyesType Eyes { get; set; }
+    public MouthType Mouth { get; set; }
+    public BodyType Body { get; set; }
 }
 
-public enum NoseTypeEnum
+public enum NoseType
 {
   Straight,
   Snub,
   Hawk
 }
 
-public enum EyesTypeEnum
+public enum EyesType
 {
   Narrow,
   Medium,
   Wide
 }
 
-public enum MouthTypeEnum
+public enum MouthType
 {
   Narrow,
   Medium,
   Wide
 }
 
-public enum BodyTypeEnum
+public enum BodyType
 {
   Slim,
   Medium,
