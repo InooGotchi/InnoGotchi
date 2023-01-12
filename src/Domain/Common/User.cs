@@ -1,8 +1,7 @@
 ﻿namespace InnoGotchi.Domain.Common;
 
-public class User
+public class User : BaseEntity
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public string ImagePath { get; set; }
