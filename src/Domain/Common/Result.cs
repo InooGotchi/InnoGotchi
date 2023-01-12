@@ -1,4 +1,4 @@
-﻿namespace InnoGotchi.Application.Common.Models;
+﻿namespace InnoGotchi.Domain.Common;
 
 public class Result
 {

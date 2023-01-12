@@ -1,5 +1,5 @@
 ﻿using InnoGotchi.Application.Common.Interfaces;
-using InnoGotchi.Application.Common.Models;
+using InnoGotchi.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
