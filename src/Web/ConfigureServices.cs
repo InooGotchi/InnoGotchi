@@ -1,9 +1,10 @@
-﻿using InnoGotchi.Application.Common.Interfaces;
+﻿using FluentValidation.AspNetCore;
+using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Infrastructure.Persistence;
 using InnoGotchi.Web.Filters;
-using InnoGotchi.Web.Services; 
-using FluentValidation.AspNetCore;
+using InnoGotchi.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using Web;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,8 @@ public static class ConfigureServices
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+        services.AddHostedService<CheckHostedService>();
 
         services.AddHttpContextAccessor();
 
