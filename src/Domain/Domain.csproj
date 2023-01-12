@@ -9,10 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="9.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Folder Include="Entities\" />
       <Folder Include="Enums\" />
       <Folder Include="Exceptions\" />
