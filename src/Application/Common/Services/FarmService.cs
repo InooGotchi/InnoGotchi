@@ -5,10 +5,12 @@ namespace Microsoft.Extensions.DependencyInjection.Common.Services;
 
 public class FarmService : IFarmService
 {
+    private readonly IRepository<Farm> _repository;
     private readonly IPetService _petService;
 
-    public FarmService(IPetService petService)
+    public FarmService(IRepository<Farm> repository, IPetService petService)
     {
+        _repository = repository;
         _petService = petService;
     }
     
