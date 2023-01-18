@@ -3,7 +3,7 @@ using InnoGotchi.Domain.Common;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace InnoGotchi.Infrastructure.Persistence.Base;
+namespace InnoGotchi.Application.Common.Interfaces;
 
 public interface IRepository<TEntity> where TEntity : BaseEntity
 {
