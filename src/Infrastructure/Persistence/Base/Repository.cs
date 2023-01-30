@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
