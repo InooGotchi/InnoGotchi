@@ -1,5 +1,6 @@
 ﻿using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Domain.Common;
+using InnoGotchi.Domain.Enums;
 
 namespace Microsoft.Extensions.DependencyInjection.Common.Services;
 
@@ -11,10 +12,16 @@ public class PetService : IPetService
     {
         _repository = repository;
     }
-    
+
     public Task<Pet> GetByIdAsync(Guid id)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<IList<Pet>> GetAliveAsync()
+    {
+        return await _repository.GetAllAsync(all => all.HungerEnum != HungerEnum.Dead && all.ThurstEnum != ThirstEnum.Dead,
+            null, null, false);
     }
 
     public Task<IList<Pet>> GetAllAsync()

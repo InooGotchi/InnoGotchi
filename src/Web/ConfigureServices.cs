@@ -31,6 +31,18 @@ public static class ConfigureServices
         services.Configure<ApiBehaviorOptions>(options =>
             options.SuppressModelStateInvalidFilter = true);
 
+        // Add Swagger services
+        services.AddSwaggerDocument(config =>
+        {
+            config.PostProcess = document =>
+            {
+                document.Info.Version = "v1";
+                document.Info.Title = "InnoGotchi API";
+                document.Info.Description = "Virtual application to manage your virtual pets ";
+                document.Info.TermsOfService = "None";
+            };
+        });
+
         return services;
     }
 }
