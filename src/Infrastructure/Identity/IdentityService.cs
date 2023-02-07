@@ -9,14 +9,15 @@ namespace InnoGotchi.Infrastructure.Identity;
 public class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
-
     public IdentityService(
-        UserManager<ApplicationUser> userManager,
-        IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager, IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService)
     {
+        _signInManager = signInManager;
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
@@ -42,13 +43,6 @@ public class IdentityService : IIdentityService
         return (result.ToApplicationResult(), user.Id);
     }
 
-    public async Task<bool> IsInRoleAsync(string userId, string role)
-    {
-        var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
-
-        return user != null && await _userManager.IsInRoleAsync(user, role);
-    }
-
     public async Task<bool> AuthorizeAsync(string userId, string policyName)
     {
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
@@ -61,6 +55,14 @@ public class IdentityService : IIdentityService
         var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
 
         var result = await _authorizationService.AuthorizeAsync(principal, policyName);
+
+        return result.Succeeded;
+    }
+
+
+    public async Task<bool> SignIn(string userName, string password, bool isPersistent)
+    {
+        var result = await _signInManager.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure: true);
 
         return result.Succeeded;
     }
@@ -78,4 +80,6 @@ public class IdentityService : IIdentityService
 
         return result.ToApplicationResult();
     }
+
+    public Task SignOut() => _signInManager.SignOutAsync();
 }
