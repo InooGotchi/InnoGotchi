@@ -1,9 +1,6 @@
-﻿using FluentValidation.AspNetCore;
-using InnoGotchi.Application.Common.Interfaces;
+﻿using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Infrastructure.Persistence;
-using InnoGotchi.Web.Filters;
 using InnoGotchi.Web.Services;
-using Microsoft.AspNetCore.Mvc;
 using Web;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -23,13 +20,12 @@ public static class ConfigureServices
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
 
-        services.AddControllers(options =>
-            options.Filters.Add<ApiExceptionFilterAttribute>())
-                .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
+        services.AddControllers();
 
-        // Customise default API behaviour
-        services.Configure<ApiBehaviorOptions>(options =>
-            options.SuppressModelStateInvalidFilter = true);
+        services.AddLogging(loggingBuilder =>
+        {
+            loggingBuilder.AddConsole();
+        });
 
         // Add Swagger services
         services.AddSwaggerDocument(config =>

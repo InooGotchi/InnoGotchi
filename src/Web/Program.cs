@@ -1,4 +1,3 @@
-using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +20,6 @@ if (app.Environment.IsDevelopment())
     {
         var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
         await initialiser.InitialiseAsync();
-        await initialiser.SeedAsync();
     }
 }
 else
@@ -38,6 +36,7 @@ app.UseStaticFiles();
 app.UseOpenApi();
 app.UseSwaggerUi3();
 
+app.UseHttpLogging();
 app.UseRouting();
 
 app.UseAuthentication();
@@ -48,4 +47,12 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
+ILoggerFactory loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+
+app.Use(async (context, next) =>
+    {
+        var logger = loggerFactory.CreateLogger("Request Information");
+        logger.LogInformation($"{DateTime.Now}: Incoming request to {context.Request.Path}");
+        await next();
+    });
 app.Run();

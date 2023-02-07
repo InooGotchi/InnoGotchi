@@ -1,5 +1,4 @@
 ﻿using InnoGotchi.Infrastructure.Identity;
-using InnoGotchi.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -53,30 +52,31 @@ public class ApplicationDbContextInitialiser
     public async Task TrySeedAsync()
     {
         // Default roles
-        var administratorRole = new IdentityRole("Administrator");
+        var userRole = new IdentityRole("User");
 
-        if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
+        if (_roleManager.Roles.All(r => r.Name != userRole.Name))
         {
-            await _roleManager.CreateAsync(administratorRole);
+            await _roleManager.CreateAsync(userRole);
         }
 
         // Default users
-        var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        var administrator = new ApplicationUser { UserName = "user@localhost", Email = "user@localhost" };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
-            await _userManager.CreateAsync(administrator, "Administrator1!");
-            if (!string.IsNullOrWhiteSpace(administratorRole.Name))
+            await _userManager.CreateAsync(administrator, "User1!");
+            if (!string.IsNullOrWhiteSpace(userRole.Name))
             {
-                await _userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(administrator, new[] { userRole.Name });
             }
         }
+
+        /// LEAVED AS EXAMPLE
 
         // Default data
         // Seed, if necessary
         // Add InnoGotchi default data if needed
 
-        /// LEAVED AS EXAMPLE
         //if (!_context.TodoLists.Any())
         //{
         //    _context.TodoLists.Add(new TodoList

@@ -30,6 +30,8 @@ public class CheckHostedService : BackgroundService
                 {
                     if (pet.NextDrinkDate < DateTime.UtcNow)
                         pet.ThurstEnum++;
+                    if (pet.NextFeedDate < DateTime.UtcNow)
+                        pet.HungerEnum++;
                 }
             }
         }

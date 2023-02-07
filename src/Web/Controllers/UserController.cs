@@ -1,27 +1,50 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using InnoGotchi.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Web.Models;
 
-namespace Web.Controllers
+namespace Web.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[AllowAnonymous]
+public class UserController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    private readonly IIdentityService _identityService;
+    public UserController(IIdentityService identityService) => _identityService = identityService;
+
+    [HttpPost("SignIn")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SignIn(UserAuthorizationModel model)
     {
-        public UserController() { }
+        if (model == null)
+            return BadRequest();
 
-        [HttpPost("Login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Login()
-        {
-            return Ok();
-        }
+        bool result = await _identityService.SignIn(model.Name, model.Password, model.IsPersistent);
 
-        [HttpPost("SignUp")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult SignUp()
-        {
-            return Ok();
-        }
+        return result ? Ok() : BadRequest();
+    }
+
+    [HttpPost("SignOut")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public new async Task<IActionResult> SignOut()
+    {
+        await _identityService.SignOut();
+        return Ok();
+    }
+
+    [HttpPost("SignUp")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SignUp(UserAuthorizationModel model)
+    {
+        if (model == null)
+            return BadRequest();
+
+        var (result, userId) = await _identityService.CreateUserAsync(model.Name, model.Password);
+
+        return result.Succeeded ? Created(string.Empty, new { result, userId }) : BadRequest(result.Errors);
     }
 }
