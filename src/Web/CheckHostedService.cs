@@ -33,6 +33,7 @@ public class CheckHostedService : BackgroundService
                     if (pet.NextFeedDate < DateTime.UtcNow)
                         pet.HungerEnum++;
                 }
+                _logger.LogInformation("Pets checked!");
             }
         }
     }
