@@ -1,5 +1,8 @@
-using System.Reflection;
 using AutoMapper;
+using InnoGotchi.Application.Common.Models;
+using InnoGotchi.Application.Common.Models.BodyPartsModels;
+using InnoGotchi.Domain.Common;
+using InnoGotchi.Domain.Common.BodyParts;
 
 namespace InnoGotchi.Application.Common.Mappings;
 
@@ -7,45 +10,43 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
-    }
+        CreateMap<User, UserModel>()
+            .ReverseMap();
 
-    private void ApplyMappingsFromAssembly(Assembly assembly)
-    {
-        var mapFromType = typeof(IMapFrom<>);
+        CreateMap<Farm, FarmViewModel>();
+
+        CreateMap<CreateUpdateFarmModel, Farm>();
+
+        CreateMap<CreateUpdatePetModel, Pet>()
+            .ForMember(
+                pet => pet.Body.BodyId,
+                opt
+                    => opt.MapFrom((src, dest) => src.BodyId))
+            .ForMember(
+                pet => pet.Body.NoseId,
+                opt
+                    => opt.MapFrom((src, dest) => src.NoseId))
+            .ForMember(
+                pet => pet.Body.EyesId,
+                opt
+                    => opt.MapFrom((src, dest) => src.EyesId))
+            .ForMember(
+                pet => pet.Body.MouthId,
+                opt
+                    => opt.MapFrom((src, dest) => src.MouthId));
+
+        CreateMap<Pet, PetViewModel>();
+
+        CreateMap<Body, BodyModel>()
+            .ReverseMap();
         
-        var mappingMethodName = nameof(IMapFrom<object>.Mapping);
-
-        bool HasInterface(Type t) => t.IsGenericType && t.GetGenericTypeDefinition() == mapFromType;
+        CreateMap<Mouth, MouthModel>()
+            .ReverseMap();
         
-        var types = assembly.GetExportedTypes().Where(t => t.GetInterfaces().Any(HasInterface)).ToList();
+        CreateMap<Eyes, EyesModel>()
+            .ReverseMap();
         
-        var argumentTypes = new Type[] { typeof(Profile) };
-
-        foreach (var type in types)
-        {
-            var instance = Activator.CreateInstance(type);
-            
-            var methodInfo = type.GetMethod(mappingMethodName);
-
-            if (methodInfo != null)
-            {
-                methodInfo.Invoke(instance, new object[] { this });
-            }
-            else
-            {
-                var interfaces = type.GetInterfaces().Where(HasInterface).ToList();
-
-                if (interfaces.Count > 0)
-                {
-                    foreach (var @interface in interfaces)
-                    {
-                        var interfaceMethodInfo = @interface.GetMethod(mappingMethodName, argumentTypes);
-
-                        interfaceMethodInfo?.Invoke(instance, new object[] { this });
-                    }
-                }
-            }
-        }
+        CreateMap<Nose, NoseModel>()
+            .ReverseMap();
     }
 }
