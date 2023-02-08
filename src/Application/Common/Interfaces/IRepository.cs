@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using InnoGotchi.Domain.Common;
+using InnoGotchi.Domain.Common.Base;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 

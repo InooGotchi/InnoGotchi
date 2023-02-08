@@ -1,4 +1,6 @@
-﻿namespace InnoGotchi.Domain.Common;
+﻿using InnoGotchi.Domain.Common.Base;
+
+namespace InnoGotchi.Domain.Common;
 
 public class Farm : BaseEntity
 {

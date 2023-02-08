@@ -1,3 +1,5 @@
+using InnoGotchi.Application.Common.Interfaces;
+using InnoGotchi.Application.Common.Services;
 using InnoGotchi.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
