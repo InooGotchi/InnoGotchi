@@ -3,6 +3,7 @@ using InnoGotchi.Application.Common.Exceptions;
 using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Application.Common.Models;
 using InnoGotchi.Domain.Common;
+using InnoGotchi.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace InnoGotchi.Application.Common.Services;
@@ -17,7 +18,7 @@ public class PetService : IPetService
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<PetViewModel> GetByIdAsync(Guid id)
     {
         var pet = await _repository.GetFirstOrDefaultAsync(
@@ -54,6 +55,15 @@ public class PetService : IPetService
 
         return _mapper.Map<IList<Pet>, IList<PetViewModel>>(pets);
     }
+
+    public async Task<IList<Pet>> GetAliveAsync()
+    {
+        var pets = await _repository.GetAllAsync(predicate: p => p.ThirstEnum != ThirstEnum.Dead && p.HungerEnum != HungerEnum.Dead);
+
+        return pets;
+    }
+
+
 
     public async Task<PetViewModel> InsertAsync(CreateUpdatePetModel entity)
     {

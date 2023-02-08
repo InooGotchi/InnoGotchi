@@ -1,5 +1,4 @@
 ﻿using InnoGotchi.Application.Common.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection.Controllers.Base;
 
 namespace Microsoft.Extensions.DependencyInjection.Controllers;
@@ -13,7 +12,7 @@ public sealed class PetsController : ApiController
         _service = service;
     }
 
-    [HttpGet("id")]
-    public async 
-        //GetByID Update Delete
+    //[HttpGet("id")]
+    //public async 
+    //    //GetByID Update Delete
 }
