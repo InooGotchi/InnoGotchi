@@ -39,20 +39,9 @@ public class PetService : IPetService
         return _mapper.Map<Pet, PetViewModel>(pet);
     }
 
-    // TODO: Remove this method
-    public async Task<IList<PetViewModel>> GetAllAsync()
+    public Task<IList<PetViewModel>> GetAllAsync()
     {
-        var pets = await _repository.GetAllAsync(
-            include: p => p.Include(p => p.Body)
-                .ThenInclude(pb => pb.Body)
-                .Include(p => p.Body)
-                .ThenInclude(pb => pb.Eyes)
-                .Include(p => p.Body)
-                .ThenInclude(pb => pb.Nose)
-                .Include(p => p.Body)
-                .ThenInclude(pb => pb.Mouth));
-
-        return _mapper.Map<IList<Pet>, IList<PetViewModel>>(pets);
+        throw new NotImplementedException();
     }
 
     public async Task<PetViewModel> InsertAsync(CreateUpdatePetModel entity)
@@ -62,10 +51,20 @@ public class PetService : IPetService
         return _mapper.Map<Pet, PetViewModel>(insertedPetEntry.Entity);
     }
 
-    public async Task<PetViewModel> UpdateAsync(CreateUpdatePetModel entity)
+    public async Task<PetViewModel> UpdateAsync(Guid id, CreateUpdatePetModel entity)
     {
-        var pet = _mapper.Map<CreateUpdatePetModel, Pet>(entity);
-        var updatedPet = await _repository.UpdateAsync(pet);
+        var existingPet = await _repository.GetFirstOrDefaultAsync(
+            predicate: p => p.Id == Guid.Empty,
+            include: p => p.Include(p => p.Body)
+                .ThenInclude(pb => pb.Body)
+                .Include(p => p.Body)
+                .ThenInclude(pb => pb.Eyes)
+                .Include(p => p.Body)
+                .ThenInclude(pb => pb.Nose)
+                .Include(p => p.Body)
+                .ThenInclude(pb => pb.Mouth));
+        _mapper.Map<CreateUpdatePetModel, Pet>(entity, existingPet);
+        var updatedPet = await _repository.UpdateAsync(existingPet);
         return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
     }
 
@@ -75,11 +74,19 @@ public class PetService : IPetService
         await _repository.DeleteAsync(pet);
     }
 
-    public async Task FeedPetAsync(Guid id)
+    public async Task<PetViewModel> FeedPetAsync(Guid id)
     {
-        // TODO: Discuss this logic
         var pet = await _repository.GetFirstOrDefaultAsync(p => p.Id == id);
         pet.HungerEnum++;
-        await _repository.UpdateAsync(pet);
+        var updatedPet = await _repository.UpdateAsync(pet);
+        return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
+    }
+    
+    public async Task<PetViewModel> HydratePetAsync(Guid id)
+    {
+        var pet = await _repository.GetFirstOrDefaultAsync(p => p.Id == id);
+        pet.ThirstEnum++;
+        var updatedPet = await _repository.UpdateAsync(pet);
+        return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
     }
 }

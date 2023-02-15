@@ -55,10 +55,16 @@ public class FarmService : IFarmService
         return _mapper.Map<Farm, FarmViewModel>(insertedFarmEntry.Entity);
     }
 
-    public async Task<FarmViewModel> UpdateAsync(CreateUpdateFarmModel entity)
+    public async Task<FarmViewModel> UpdateAsync(Guid id, CreateUpdateFarmModel entity)
     {
-        var farm = _mapper.Map<CreateUpdateFarmModel, Farm>(entity);
-        var updatedFarmEntry = await _repository.UpdateAsync(farm);
+        var existingFarm = await _repository.GetFirstOrDefaultAsync(
+            predicate: f => f.Id == id,
+            include: farm => farm
+                .Include(f => f.Pets)
+                .Include(f => f.Colaborators)
+                .Include(f => f.Owner));
+        _mapper.Map<CreateUpdateFarmModel, Farm>(entity, existingFarm);
+        var updatedFarmEntry = await _repository.UpdateAsync(existingFarm);
         return _mapper.Map<Farm, FarmViewModel>(updatedFarmEntry.Entity);
     }
 

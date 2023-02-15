@@ -31,14 +31,14 @@ public sealed class FarmsController : ApiController
     [HttpPost]
     public async Task<ActionResult<FarmViewModel>> CreateAsync(CreateUpdateFarmModel farm)
     {
-        var created = await _service.UpdateAsync(farm);
+        var created = await _service.InsertAsync(farm);
         return CreatedAtAction("GetByIdAsync", created, new {id = created.Id});
     }
 
-    [HttpPost]
-    public async Task<ActionResult<FarmViewModel>> UpdateAsync(CreateUpdateFarmModel farm)
+    [HttpPost("id")]
+    public async Task<ActionResult<FarmViewModel>> UpdateAsync(Guid id, CreateUpdateFarmModel farm)
     {
-        var updated = await _service.UpdateAsync(farm);
+        var updated = await _service.UpdateAsync(id, farm);
         return Ok(updated);
     }
 
