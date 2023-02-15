@@ -1,9 +1,10 @@
-﻿using InnoGotchi.Domain.Common;
+﻿using InnoGotchi.Application.Common.Models;
+using InnoGotchi.Domain.Common;
 
 namespace InnoGotchi.Application.Common.Interfaces;
 
-public interface IFarmService : IService<Farm, Guid>
+public interface IFarmService : IService<FarmViewModel, CreateUpdateFarmModel, Guid>
 {
-    Task AddPetAsync(Pet pet);
+    Task AddPetAsync(CreateUpdatePetModel pet);
     Task RemovePetAsync(Guid id);
 }

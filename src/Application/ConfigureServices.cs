@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using InnoGotchi.Application.Common.Interfaces;
-using InnoGotchi.Domain.Common;
-using Microsoft.Extensions.DependencyInjection.Common.Services;
+using InnoGotchi.Application.Common.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

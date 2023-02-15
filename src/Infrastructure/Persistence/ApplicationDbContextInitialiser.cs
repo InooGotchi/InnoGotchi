@@ -27,7 +27,7 @@ public class ApplicationDbContextInitialiser
         {
             if (_context.Database.IsSqlServer())
             {
-                await _context.Database.MigrateAsync();
+                // await _context.Database.MigrateAsync();
             }
         }
         catch (Exception ex)
@@ -41,7 +41,7 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
-            await TrySeedAsync();
+            // await TrySeedAsync();
         }
         catch (Exception ex)
         {

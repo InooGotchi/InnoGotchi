@@ -1,51 +1,86 @@
-﻿using InnoGotchi.Application.Common.Interfaces;
+﻿using AutoMapper;
+using InnoGotchi.Application.Common.Exceptions;
+using InnoGotchi.Application.Common.Interfaces;
+using InnoGotchi.Application.Common.Models;
 using InnoGotchi.Domain.Common;
+using Microsoft.EntityFrameworkCore;
 
-namespace Microsoft.Extensions.DependencyInjection.Common.Services;
+namespace InnoGotchi.Application.Common.Services;
 
 public class FarmService : IFarmService
 {
     private readonly IRepository<Farm> _repository;
     private readonly IPetService _petService;
+    private readonly IMapper _mapper;
 
-    public FarmService(IRepository<Farm> repository, IPetService petService)
+    public FarmService(IRepository<Farm> repository, IPetService petService, IMapper mapper)
     {
         _repository = repository;
         _petService = petService;
+        _mapper = mapper;
     }
     
-    public Task<Farm> GetByIdAsync(Guid id)
+    public async Task<FarmViewModel> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var farm = await _repository.GetFirstOrDefaultAsync(
+            predicate: f => f.Id == id,
+            include: farm => farm
+                .Include(f => f.Pets)
+                .Include(f => f.Colaborators)
+                .Include(f => f.Owner));
+
+        if (farm is null)
+        {
+            throw new NotFoundException(nameof(farm), id);
+        }
+        
+        return _mapper.Map<Farm, FarmViewModel>(farm);
     }
 
-    public Task<IList<Farm>> GetAllAsync()
+    public async Task<IList<FarmViewModel>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var farms = await _repository.GetAllAsync(
+            include: farm => farm
+                .Include(f => f.Pets)
+                .Include(f => f.Colaborators)
+                .Include(f => f.Owner));
+        
+        return _mapper.Map<IList<Farm>, IList<FarmViewModel>>(farms);
     }
 
-    public Task<Farm> InsertAsync(Farm entity)
+    public async Task<FarmViewModel> InsertAsync(CreateUpdateFarmModel entity)
     {
-        throw new NotImplementedException();
+        var farm = _mapper.Map<CreateUpdateFarmModel, Farm>(entity);
+        var insertedFarmEntry = await _repository.InsertAsync(farm);
+        return _mapper.Map<Farm, FarmViewModel>(insertedFarmEntry.Entity);
     }
 
-    public Task<Farm> UpdateAsync(Farm entity)
+    public async Task<FarmViewModel> UpdateAsync(Guid id, CreateUpdateFarmModel entity)
     {
-        throw new NotImplementedException();
+        var existingFarm = await _repository.GetFirstOrDefaultAsync(
+            predicate: f => f.Id == id,
+            include: farm => farm
+                .Include(f => f.Pets)
+                .Include(f => f.Colaborators)
+                .Include(f => f.Owner));
+        _mapper.Map<CreateUpdateFarmModel, Farm>(entity, existingFarm);
+        var updatedFarmEntry = await _repository.UpdateAsync(existingFarm);
+        return _mapper.Map<Farm, FarmViewModel>(updatedFarmEntry.Entity);
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var farm = await _repository.GetFirstOrDefaultAsync(f => f.Id == id);
+        await _repository.DeleteAsync(farm);
     }
 
-    public Task AddPetAsync(Pet pet)
+    public async Task AddPetAsync(CreateUpdatePetModel pet)
     {
-        throw new NotImplementedException();
+        await _petService.InsertAsync(pet);
     }
 
-    public Task RemovePetAsync(Guid id)
+    public async Task RemovePetAsync(Guid id)
     {
-        throw new NotImplementedException();
+        await _petService.DeleteAsync(id);
     }
 }
