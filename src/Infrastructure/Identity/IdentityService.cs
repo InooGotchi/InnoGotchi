@@ -1,6 +1,6 @@
-﻿using InnoGotchi.Application.Common.Interfaces;
+﻿using InnoGotchi.Application.Common.Exceptions;
+using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Domain.Common;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,27 +10,53 @@ public class IdentityService : IIdentityService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
-    private readonly IAuthorizationService _authorizationService;
+
     public IdentityService(
         SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager, IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+        UserManager<ApplicationUser> userManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;
-        _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
-        _authorizationService = authorizationService;
     }
 
-    public async Task<string?> GetUserNameAsync(string userId)
+    public async Task<string?> GetUserNameAsync(Guid userId)
     {
         var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
 
         return user.UserName;
     }
 
-    public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+    public async Task<(Guid? id, string? userName)> GetUserDetailsAsync(Guid userId)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found");
+        }
+        return (user.Id, user.UserName);
+    }
+
+    public async Task<(Guid? id, string? userName)> GetUserDetailsByUserNameAsync(string userName)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found");
+        }
+        return (user.Id, user.UserName);
+    }
+
+    public async Task<Guid> GetUserIdAsync(string userName)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == userName);
+        if (user == null)
+        {
+            throw new NotFoundException("User not found");
+        }
+        return user.Id;
+    }
+
+    public async Task<(Result Result, Guid UserId)> CreateUserAsync(string userName, string password)
     {
         var user = new ApplicationUser
         {
@@ -43,23 +69,6 @@ public class IdentityService : IIdentityService
         return (result.ToApplicationResult(), user.Id);
     }
 
-    public async Task<bool> AuthorizeAsync(string userId, string policyName)
-    {
-        var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
-
-        if (user == null)
-        {
-            return false;
-        }
-
-        var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
-
-        var result = await _authorizationService.AuthorizeAsync(principal, policyName);
-
-        return result.Succeeded;
-    }
-
-
     public async Task<bool> SignIn(string userName, string password, bool isPersistent)
     {
         var result = await _signInManager.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure: true);
@@ -67,7 +76,7 @@ public class IdentityService : IIdentityService
         return result.Succeeded;
     }
 
-    public async Task<Result> DeleteUserAsync(string userId)
+    public async Task<Result> DeleteUserAsync(Guid userId)
     {
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
@@ -80,6 +89,4 @@ public class IdentityService : IIdentityService
 
         return result.ToApplicationResult();
     }
-
-    public Task SignOut() => _signInManager.SignOutAsync();
 }
