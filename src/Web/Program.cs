@@ -1,5 +1,3 @@
-using InnoGotchi.Application.Common.Interfaces;
-using InnoGotchi.Application.Common.Services;
 using InnoGotchi.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add InnoGotchi services to the container.
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddWebServices();
+builder.Services.AddWebServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -42,7 +40,6 @@ app.UseHttpLogging();
 app.UseRouting();
 
 app.UseAuthentication();
-app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapControllerRoute(

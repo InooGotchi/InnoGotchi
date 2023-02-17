@@ -1,6 +1,6 @@
 ﻿namespace Web.Models;
 
-public class UserAuthorizationModel
+public class UserAuthenticationModel
 {
     public string Name { get; set; } = default!;
     public string Password { get; set; } = default!;

@@ -10,14 +10,13 @@ public class ApplicationDbContextInitialiser
     private readonly ILogger<ApplicationDbContextInitialiser> _logger;
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger,
+        ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
         _logger = logger;
         _context = context;
         _userManager = userManager;
-        _roleManager = roleManager;
     }
 
     public async Task InitialiseAsync()
@@ -51,24 +50,13 @@ public class ApplicationDbContextInitialiser
 
     public async Task TrySeedAsync()
     {
-        // Default roles
-        var userRole = new IdentityRole("User");
-
-        if (_roleManager.Roles.All(r => r.Name != userRole.Name))
-        {
-            await _roleManager.CreateAsync(userRole);
-        }
 
         // Default users
-        var administrator = new ApplicationUser { UserName = "user@localhost", Email = "user@localhost" };
+        var user = new ApplicationUser { UserName = "user@localhost", Email = "user@localhost" };
 
-        if (_userManager.Users.All(u => u.UserName != administrator.UserName))
+        if (_userManager.Users.All(u => u.UserName != user.UserName))
         {
-            await _userManager.CreateAsync(administrator, "User1!");
-            if (!string.IsNullOrWhiteSpace(userRole.Name))
-            {
-                await _userManager.AddToRolesAsync(administrator, new[] { userRole.Name });
-            }
+            await _userManager.CreateAsync(user, "User1!'");
         }
 
         /// LEAVED AS EXAMPLE
