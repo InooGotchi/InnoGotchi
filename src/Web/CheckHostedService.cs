@@ -29,7 +29,7 @@ public class CheckHostedService : BackgroundService
                 foreach (var pet in alivePets)
                 {
                     if (pet.NextDrinkDate < DateTime.UtcNow)
-                        pet.ThurstEnum++;
+                        pet.ThirstEnum++;
                     if (pet.NextFeedDate < DateTime.UtcNow)
                         pet.HungerEnum++;
                 }

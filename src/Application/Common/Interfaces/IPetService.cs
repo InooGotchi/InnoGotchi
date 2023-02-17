@@ -5,6 +5,7 @@ namespace InnoGotchi.Application.Common.Interfaces;
 
 public interface IPetService : IService<PetViewModel, CreateUpdatePetModel, Guid>
 {
-    Task FeedPetAsync(Guid id);
     Task<IList<Pet>> GetAliveAsync();
+    Task<PetViewModel> FeedPetAsync(Guid id);
+    Task<PetViewModel> HydratePetAsync(Guid id);
 }
