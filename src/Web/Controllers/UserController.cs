@@ -1,4 +1,5 @@
-﻿using InnoGotchi.Application.Common.Interfaces;
+﻿using CleanArchitecture.Application.Common.Interfaces;
+using InnoGotchi.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
@@ -11,34 +12,38 @@ namespace Web.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IIdentityService _identityService;
-    public UserController(IIdentityService identityService) => _identityService = identityService;
+    private readonly ITokenService _tokenService;
+    public UserController(IIdentityService identityService, ITokenService tokenService)
+    {
+        _identityService = identityService;
+        _tokenService = tokenService;
+    }
 
     [HttpPost("SignIn")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SignIn(UserAuthorizationModel model)
+    public async Task<IActionResult> SignIn(UserAuthenticationModel model)
     {
         if (model == null)
             return BadRequest();
 
-        bool result = await _identityService.SignIn(model.Name, model.Password, model.IsPersistent);
+        var result = await _identityService.SignIn(model.Name, model.Password, model.IsPersistent);
 
-        return result ? Ok() : BadRequest();
-    }
+        if (!result)
+            return BadRequest("Invalid username or password");
 
-    [HttpPost("SignOut")]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public new async Task<IActionResult> SignOut()
-    {
-        await _identityService.SignOut();
-        return Ok();
+
+        var (userId, userName) = await _identityService.GetUserDetailsAsync(await _identityService.GetUserIdAsync(model.Name));
+
+        string token = _tokenService.GenerateJWTToken((userId, userName));
+
+        return Ok(new AuthenticationResponseDTO() { UserId = userId, Name = userName, Token = token });
     }
 
     [HttpPost("SignUp")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SignUp(UserAuthorizationModel model)
+    public async Task<IActionResult> SignUp(UserAuthenticationModel model)
     {
         if (model == null)
             return BadRequest();
