@@ -1,8 +1,8 @@
 ﻿namespace InnoGotchi.Domain.Enums;
 public enum HungerEnum
 {
-    FedUp,
+    Full,
+    Normal,
     Hungry,
-    Starving,
     Dead
 }
