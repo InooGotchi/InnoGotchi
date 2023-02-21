@@ -7,7 +7,6 @@ using Web.Models;
 
 namespace Web.Controllers;
 
-[Route("api/[controller]")]
 [AllowAnonymous]
 public class UserController : ApiController
 

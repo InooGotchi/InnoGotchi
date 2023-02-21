@@ -14,36 +14,36 @@ public sealed class PetsController : ApiController
         _service = service;
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<PetViewModel>> GetPetByIdAsync(Guid id)
     {
         var petViewModel = await _service.GetByIdAsync(id);
         return Ok(petViewModel);
     }
-    
-    [HttpGet("id")]
-    public async Task<ActionResult<PetViewModel>> UpdatePetAsync(Guid id, CreateUpdatePetModel petModel)
+
+    [HttpPost("{id}")]
+    public async Task<ActionResult<PetViewModel>> UpdatePetAsync(Guid id, [FromBody] CreateUpdatePetModel petModel)
     {
         var updatedPet = await _service.UpdateAsync(id, petModel);
         return Ok(updatedPet);
     }
-    
-    [HttpGet("id")]
+
+    [HttpDelete("{id}")]
     public async Task<ActionResult<PetViewModel>> DeletePetAsync(Guid id)
     {
         await _service.DeleteAsync(id);
         return NoContent();
     }
-    
-    [HttpPost("id/feed")]
+
+    [HttpPut("Feed/{id}")]
     public async Task<ActionResult<PetViewModel>> FeedPetAsync(Guid id)
     {
         var updatedPet = await _service.FeedPetAsync(id);
         return Ok(updatedPet);
     }
-    
-    [HttpPost("id/hydrate")]
-    public async Task<ActionResult<PetViewModel>> HydratePetAsync(Guid id)
+
+    [HttpPut("Drink/{id}")]
+    public async Task<ActionResult<PetViewModel>> DrinkPetAsync(Guid id)
     {
         var updatedPet = await _service.DrinkPetAsync(id);
         return Ok(updatedPet);
