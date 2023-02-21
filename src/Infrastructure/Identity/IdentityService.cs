@@ -58,12 +58,12 @@ public class IdentityService : IIdentityService
 
     public async Task<(Result Result, Guid UserId)> CreateUserAsync(string userName, string password)
     {
-        ApplicationUser user = new ApplicationUser
+        var user = new ApplicationUser
         {
             UserName = userName,
         };
 
-        IdentityResult result = await _userManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, password);
 
         return (result.ToApplicationResult(), user.Id);
     }

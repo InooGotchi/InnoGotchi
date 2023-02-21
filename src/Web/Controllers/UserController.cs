@@ -36,7 +36,7 @@ public class UserController : ApiController
 
         var (userId, userName) = await _identityService.GetUserDetailsAsync(await _identityService.GetUserIdAsync(model.Name));
 
-        string token = _tokenService.GenerateJWTToken((userId, userName));
+        var token = _tokenService.GenerateJWTToken((userId, userName));
 
         return Ok(new AuthenticationResponseDTO() { UserId = userId, Name = userName, Token = token });
     }

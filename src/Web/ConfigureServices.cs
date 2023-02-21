@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Web;
+using static InnoGotchi.Infrastructure.Services.TokenService;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -28,14 +29,29 @@ public static class ConfigureServices
 
         services.AddControllers();
 
-        // For authentication
-        var key = configuration["Jwt:Key"];
-        var issuer = configuration["Jwt:Issuer"];
-        var audience = configuration["Jwt:Audience"];
-        var expirtyMinutes = configuration["Jwt:ExpiryMinutes"];
+        // For Jwt authentication
+        var jwtConfiguration = configuration.GetSection("Jwt");
+
+        services.Configure<JwtTokenOptions>(jwtConfiguration);
+
+        services.Configure<JwtBearerOptions>(options =>
+        {
+            var jwtOptions = jwtConfiguration.Get<JwtTokenOptions>();
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                ValidIssuer = jwtOptions.Issuer,
+                ValidAudience = jwtOptions.Audience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(Convert.ToDouble(jwtOptions.Expiration))
+            };
+        });
 
         // Dependency injection with key
-        services.AddSingleton<ITokenService>(new TokenService(key, issuer, audience, expirtyMinutes));
+        services.AddSingleton<ITokenService, TokenService>();
 
         // Configuration for token
         services.AddAuthentication(x =>
@@ -43,23 +59,7 @@ public static class ConfigureServices
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(x =>
-        {
-            x.RequireHttpsMetadata = false;
-            x.SaveToken = true;
-            x.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidAudience = audience,
-                ValidIssuer = issuer,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-                ClockSkew = TimeSpan.FromMinutes(Convert.ToDouble(expirtyMinutes))
-
-            };
-        });
+        }).AddJwtBearer();
 
         services.AddLogging(loggingBuilder =>
         {
