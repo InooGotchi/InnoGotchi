@@ -97,7 +97,7 @@ public class PetService : IPetService
         return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
     }
 
-    public async Task<PetViewModel> HydratePetAsync(Guid id)
+    public async Task<PetViewModel> DrinkPetAsync(Guid id)
     {
         var pet = await _repository.GetFirstOrDefaultAsync(p => p.Id == id);
         pet.ThirstEnum++;

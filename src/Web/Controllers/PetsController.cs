@@ -45,7 +45,7 @@ public sealed class PetsController : ApiController
     [HttpPost("id/hydrate")]
     public async Task<ActionResult<PetViewModel>> HydratePetAsync(Guid id)
     {
-        var updatedPet = await _service.HydratePetAsync(id);
+        var updatedPet = await _service.DrinkPetAsync(id);
         return Ok(updatedPet);
     }
 }
