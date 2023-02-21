@@ -2,14 +2,15 @@
 using InnoGotchi.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection.Controllers.Base;
 using Web.Models;
 
 namespace Web.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
 [AllowAnonymous]
-public class UserController : ControllerBase
+public class UserController : ApiController
+
 {
     private readonly IIdentityService _identityService;
     private readonly ITokenService _tokenService;
