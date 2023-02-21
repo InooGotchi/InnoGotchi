@@ -25,15 +25,8 @@ public class CheckHostedService : BackgroundService
             var petService = scope.ServiceProvider.GetService<IPetService>();
             if (petService is not null)
             {
-                var alivePets = await petService.GetAliveAsync();
-                foreach (var pet in alivePets)
-                {
-                    if (pet.NextDrinkDate < DateTime.UtcNow)
-                        pet.ThirstEnum++;
-                    if (pet.NextFeedDate < DateTime.UtcNow)
-                        pet.HungerEnum++;
-                }
-                _logger.LogInformation("Pets checked!");
+                int petsUpdated = await petService.UpdateAlivePetsStatuses();
+                _logger.LogInformation($"All Pets checked and {petsUpdated} updated!");
             }
         }
     }

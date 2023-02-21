@@ -45,14 +45,19 @@ public class PetService : IPetService
         throw new NotImplementedException();
     }
 
-    public async Task<IList<Pet>> GetAliveAsync()
+    public async Task<int> UpdateAlivePetsStatuses()
     {
         var pets = await _repository.GetAllAsync(predicate: p => p.ThirstEnum != ThirstEnum.Dead && p.HungerEnum != HungerEnum.Dead);
+        foreach (var pet in pets)
+        {
+            if (pet.NextDrinkDate < DateTime.UtcNow)
+                pet.ThirstEnum++;
+            if (pet.NextFeedDate < DateTime.UtcNow)
+                pet.HungerEnum++;
+        }
 
-        return pets;
+        return pets.Any() ? await _repository.SaveChangesAsync() : default;
     }
-
-
 
     public async Task<PetViewModel> InsertAsync(CreateUpdatePetModel entity)
     {
@@ -91,7 +96,7 @@ public class PetService : IPetService
         var updatedPet = await _repository.UpdateAsync(pet);
         return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
     }
-    
+
     public async Task<PetViewModel> HydratePetAsync(Guid id)
     {
         var pet = await _repository.GetFirstOrDefaultAsync(p => p.Id == id);

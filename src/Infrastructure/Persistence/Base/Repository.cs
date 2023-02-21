@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using InnoGotchi.Application.Common.Interfaces;
-using InnoGotchi.Domain.Common;
 using InnoGotchi.Domain.Common.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -12,7 +11,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<TEntity> _dbSet;
-    
+
     public Repository(ApplicationDbContext context)
     {
         this._context = context;
@@ -67,7 +66,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
             query = include(query);
         }
 
-        return predicate is not null 
+        return predicate is not null
             ? await query.FirstOrDefaultAsync(predicate)
             : await query.FirstOrDefaultAsync();
     }
@@ -100,4 +99,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
         _dbSet.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<int> SaveChangesAsync(
+        CancellationToken cancellationToken = default) => await _context.SaveChangesAsync(cancellationToken);
 }

@@ -31,7 +31,6 @@ public sealed class TokenService : ITokenService
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userName),
                 new Claim(JwtRegisteredClaimNames.Jti, userId.ToString()),
-                new Claim(ClaimTypes.Name, userName),
                 new Claim("UserId", userId.ToString())
             };
 
