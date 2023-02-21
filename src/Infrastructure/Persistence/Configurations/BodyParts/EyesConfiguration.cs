@@ -10,6 +10,6 @@ public sealed class EyesConfiguration : BaseBodyPartConfiguration<Eyes>
     {
         base.Configure(builder);
 
-        builder.HasMany(n => n.PetBodies).WithOne(pb => pb.Eyes);
+        builder.HasMany(e => e.PetBodies).WithOne(pb => pb.Eyes);
     }
 }

@@ -12,13 +12,13 @@ public sealed class PetConfiguration : BaseEntityConfiguration<Pet>
     {
         base.Configure(builder);
 
-        builder.Property(farm => farm.Name).HasMaxLength(255).IsRequired();
-        builder.Property(farm => farm.Age).IsRequired();
-        builder.Property(farm => farm.NextFeedDate).IsRequired();
-        builder.Property(farm => farm.NextDrinkDate).IsRequired();
-        builder.Property(farm => farm.HungerEnum).HasDefaultValue(HungerEnum.Normal);
-        builder.Property(farm => farm.ThirstEnum).HasDefaultValue(ThirstEnum.Normal);
-        builder.Property(farm => farm.Happiness).HasDefaultValue(0);
+        builder.Property(pet => pet.Name).HasMaxLength(255).IsRequired();
+        builder.Property(pet => pet.Age).IsRequired();
+        builder.Property(pet => pet.NextFeedDate).IsRequired();
+        builder.Property(pet => pet.NextDrinkDate).IsRequired();
+        builder.Property(pet => pet.HungerEnum).HasDefaultValue(HungerEnum.Normal);
+        builder.Property(pet => pet.ThirstEnum).HasDefaultValue(ThirstEnum.Normal);
+        builder.Property(pet => pet.Happiness).HasDefaultValue(0);
 
 
         builder.HasOne(p => p.Farm).WithMany(p => p.Pets);

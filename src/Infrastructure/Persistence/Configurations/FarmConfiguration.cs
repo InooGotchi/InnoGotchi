@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InnoGotchi.Infrastructure.Persistence.Configurations;
+
 public sealed class FarmConfiguration : BaseEntityConfiguration<Farm>
 {
     public override void Configure(EntityTypeBuilder<Farm> builder)

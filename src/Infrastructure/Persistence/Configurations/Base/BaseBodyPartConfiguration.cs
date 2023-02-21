@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InnoGotchi.Infrastructure.Persistence.Configurations.Base;
+
 public class BaseBodyPartConfiguration<TEntity> : BaseEntityConfiguration<TEntity> where TEntity : BodyPart
 {
     public override void Configure(EntityTypeBuilder<TEntity> builder)

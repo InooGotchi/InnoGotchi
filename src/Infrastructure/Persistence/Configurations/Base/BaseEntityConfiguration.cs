@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InnoGotchi.Infrastructure.Persistence.Configurations.Base;
+
 public class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity>
     where TEntity : BaseEntity
 {

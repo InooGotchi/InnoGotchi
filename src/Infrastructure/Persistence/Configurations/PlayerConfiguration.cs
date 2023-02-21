@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InnoGotchi.Infrastructure.Persistence.Configurations;
+
 public sealed class PlayerConfiguration : BaseEntityConfiguration<Player>
 {
     public override void Configure(EntityTypeBuilder<Player> builder)

@@ -3,6 +3,7 @@ using InnoGotchi.Infrastructure.Persistence.Configurations.Base;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InnoGotchi.Infrastructure.Persistence.Configurations;
+
 public sealed class PetBodyConfiguration : BaseEntityConfiguration<PetBody>
 {
     public override void Configure(EntityTypeBuilder<PetBody> builder)
@@ -18,6 +19,5 @@ public sealed class PetBodyConfiguration : BaseEntityConfiguration<PetBody>
         builder.HasOne(pb => pb.Mouth).WithMany(e => e.PetBodies).HasForeignKey(pb => pb.MouthId);
 
         builder.HasOne(pb => pb.Body).WithMany(e => e.PetBodies).HasForeignKey(pb => pb.BodyId);
-
     }
 }
