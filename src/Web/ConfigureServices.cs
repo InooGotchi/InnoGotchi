@@ -61,11 +61,6 @@ public static class ConfigureServices
             x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer();
 
-        services.AddLogging(loggingBuilder =>
-        {
-            loggingBuilder.AddConsole();
-        });
-
         // Add Swagger services
         services.AddSwaggerGen(c =>
         {
