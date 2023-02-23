@@ -21,7 +21,7 @@ public class PetService : IPetService
     public async Task<PetViewModel> GetByIdAsync(Guid id)
     {
         var pet = await _repository.GetFirstOrDefaultAsync(
-            predicate: p => p.Id == Guid.Empty,
+            predicate: p => p.Id == id,
             include: p => p.Include(p => p.Body)
                 .ThenInclude(pb => pb.Body)
                 .Include(p => p.Body)
@@ -48,13 +48,13 @@ public class PetService : IPetService
     {
         var pet = _mapper.Map<CreateUpdatePetModel, Pet>(entity);
         var insertedPetEntry = await _repository.InsertAsync(pet);
-        return _mapper.Map<Pet, PetViewModel>(insertedPetEntry.Entity);
+        return _mapper.Map<Pet, PetViewModel>(insertedPetEntry);
     }
 
     public async Task<PetViewModel> UpdateAsync(Guid id, CreateUpdatePetModel entity)
     {
         var existingPet = await _repository.GetFirstOrDefaultAsync(
-            predicate: p => p.Id == Guid.Empty,
+            predicate: p => p.Id == id,
             include: p => p.Include(p => p.Body)
                 .ThenInclude(pb => pb.Body)
                 .Include(p => p.Body)
@@ -65,7 +65,7 @@ public class PetService : IPetService
                 .ThenInclude(pb => pb.Mouth));
         _mapper.Map<CreateUpdatePetModel, Pet>(entity, existingPet);
         var updatedPet = await _repository.UpdateAsync(existingPet);
-        return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
+        return _mapper.Map<Pet, PetViewModel>(updatedPet);
     }
 
     public async Task DeleteAsync(Guid id)
@@ -79,7 +79,7 @@ public class PetService : IPetService
         var pet = await _repository.GetFirstOrDefaultAsync(p => p.Id == id);
         pet.HungerEnum++;
         var updatedPet = await _repository.UpdateAsync(pet);
-        return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
+        return _mapper.Map<Pet, PetViewModel>(updatedPet);
     }
     
     public async Task<PetViewModel> HydratePetAsync(Guid id)
@@ -87,6 +87,6 @@ public class PetService : IPetService
         var pet = await _repository.GetFirstOrDefaultAsync(p => p.Id == id);
         pet.ThirstEnum++;
         var updatedPet = await _repository.UpdateAsync(pet);
-        return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
+        return _mapper.Map<Pet, PetViewModel>(updatedPet);
     }
 }

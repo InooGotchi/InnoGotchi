@@ -72,24 +72,22 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEnti
             : await query.FirstOrDefaultAsync();
     }
 
-    public async ValueTask<EntityEntry<TEntity>> InsertAsync(
-        TEntity entity,
+    public async ValueTask<TEntity> InsertAsync(TEntity entity,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
         var createdEntity = await _dbSet.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
-        return createdEntity;
+        return createdEntity.Entity;
     }
 
-    public async Task<EntityEntry<TEntity>> UpdateAsync(
-        TEntity entity,
+    public async Task<TEntity> UpdateAsync(TEntity entity,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
         var updatedEntity = _dbSet.Update(entity);
         await _context.SaveChangesAsync(cancellationToken);
-        return updatedEntity;
+        return updatedEntity.Entity;
     }
 
     public async Task DeleteAsync(

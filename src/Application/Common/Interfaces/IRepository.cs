@@ -19,12 +19,10 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool disableTracking = true);
     
-    ValueTask<EntityEntry<TEntity>> InsertAsync(
-        TEntity entity,
+    ValueTask<TEntity> InsertAsync(TEntity entity,
         CancellationToken cancellationToken = default);
     
-    Task<EntityEntry<TEntity>> UpdateAsync(
-        TEntity entity,
+    Task<TEntity> UpdateAsync(TEntity entity,
         CancellationToken cancellationToken = default);
     
     Task DeleteAsync(
