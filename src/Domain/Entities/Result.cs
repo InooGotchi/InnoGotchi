@@ -1,6 +1,6 @@
 ﻿namespace InnoGotchi.Domain.Common;
 
-public class Result
+public sealed class Result
 {
     internal Result(bool succeeded, IEnumerable<string> errors)
     {

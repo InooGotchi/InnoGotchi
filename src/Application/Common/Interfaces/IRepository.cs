@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using InnoGotchi.Domain.Common;
 using InnoGotchi.Domain.Common.Base;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
@@ -18,16 +17,19 @@ public interface IRepository<TEntity> where TEntity : BaseEntity
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool disableTracking = true);
-    
+
     ValueTask<EntityEntry<TEntity>> InsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default);
-    
+
     Task<EntityEntry<TEntity>> UpdateAsync(
         TEntity entity,
         CancellationToken cancellationToken = default);
-    
+
     Task DeleteAsync(
         TEntity entity,
         CancellationToken cancellationToken = default);
+
+    Task<int> SaveChangesAsync(
+    CancellationToken cancellationToken = default);
 }

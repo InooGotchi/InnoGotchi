@@ -3,6 +3,7 @@ using InnoGotchi.Application.Common.Exceptions;
 using InnoGotchi.Application.Common.Interfaces;
 using InnoGotchi.Application.Common.Models;
 using InnoGotchi.Domain.Common;
+using InnoGotchi.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace InnoGotchi.Application.Common.Services;
@@ -17,7 +18,7 @@ public class PetService : IPetService
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     public async Task<PetViewModel> GetByIdAsync(Guid id)
     {
         var pet = await _repository.GetFirstOrDefaultAsync(
@@ -42,6 +43,20 @@ public class PetService : IPetService
     public Task<IList<PetViewModel>> GetAllAsync()
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<int> UpdateAlivePetsStatuses()
+    {
+        var pets = await _repository.GetAllAsync(predicate: p => p.ThirstEnum != ThirstEnum.Dead && p.HungerEnum != HungerEnum.Dead);
+        foreach (var pet in pets)
+        {
+            if (pet.NextDrinkDate < DateTime.UtcNow)
+                pet.ThirstEnum++;
+            if (pet.NextFeedDate < DateTime.UtcNow)
+                pet.HungerEnum++;
+        }
+
+        return pets.Any() ? await _repository.SaveChangesAsync() : default;
     }
 
     public async Task<PetViewModel> InsertAsync(CreateUpdatePetModel entity)
@@ -81,8 +96,8 @@ public class PetService : IPetService
         var updatedPet = await _repository.UpdateAsync(pet);
         return _mapper.Map<Pet, PetViewModel>(updatedPet.Entity);
     }
-    
-    public async Task<PetViewModel> HydratePetAsync(Guid id)
+
+    public async Task<PetViewModel> DrinkPetAsync(Guid id)
     {
         var pet = await _repository.GetFirstOrDefaultAsync(p => p.Id == id);
         pet.ThirstEnum++;

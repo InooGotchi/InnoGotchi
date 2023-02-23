@@ -1,13 +1,11 @@
-using InnoGotchi.Application.Common.Interfaces;
-using InnoGotchi.Application.Common.Services;
 using InnoGotchi.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add InnoGotchi services to the container.
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddWebServices();
+builder.Services.AddWebServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -20,12 +18,8 @@ if (app.Environment.IsDevelopment())
     // Initialise and seed database
     using (var scope = app.Services.CreateScope())
     {
-        // var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
-        // await initialiser.InitialiseAsync();
-        // await initialiser.SeedAsync();
-
-        var service = scope.ServiceProvider.GetRequiredService<IPetService>();
-        var p = await service.GetByIdAsync(Guid.Empty);
+        var initializer = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+        await initializer.InitialiseAsync();
     }
 }
 else
@@ -38,14 +32,17 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// Register the Swagger generator and the Swagger UI middlewares
+app.UseOpenApi();
+app.UseSwaggerUi3();
+
 app.UseRouting();
 
+app.UseHttpLogging();
+
 app.UseAuthentication();
-app.UseIdentityServer();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+app.MapDefaultControllerRoute();
 
 app.Run();

@@ -1,8 +1,8 @@
 ﻿namespace InnoGotchi.Domain.Enums;
 public enum ThirstEnum
 {
-    Ok,
-    WantWatter,
-    LoosingMind,
+    Full,
+    Normal,
+    Thristy,
     Dead
 }
