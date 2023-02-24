@@ -5,14 +5,11 @@ using Microsoft.Extensions.DependencyInjection.Controllers.Base;
 
 namespace Microsoft.Extensions.DependencyInjection.Controllers;
 
-public sealed class PetsController : ApiController
+public sealed class PetController : ApiController
 {
     private readonly IPetService _service;
 
-    public PetsController(IPetService service)
-    {
-        _service = service;
-    }
+    public PetController(IPetService service) => _service = service;
 
     [HttpGet("{id}")]
     public async Task<ActionResult<PetViewModel>> GetPetByIdAsync(Guid id)
@@ -21,10 +18,10 @@ public sealed class PetsController : ApiController
         return Ok(petViewModel);
     }
 
-    [HttpPost("{id}")]
-    public async Task<ActionResult<PetViewModel>> UpdatePetAsync(Guid id, [FromBody] CreateUpdatePetModel petModel)
+    [HttpPost("Update")]
+    public async Task<ActionResult<PetViewModel>> UpdatePetAsync(CreateUpdatePetModel petModel)
     {
-        var updatedPet = await _service.UpdateAsync(id, petModel);
+        var updatedPet = await _service.UpdateAsync(petModel);
         return Ok(updatedPet);
     }
 
