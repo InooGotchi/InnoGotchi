@@ -55,10 +55,10 @@ public class FarmService : IFarmService
         return _mapper.Map<Farm, FarmViewModel>(insertedFarmEntry.Entity);
     }
 
-    public async Task<FarmViewModel> UpdateAsync(Guid id, CreateUpdateFarmModel entity)
+    public async Task<FarmViewModel> UpdateAsync(CreateUpdateFarmModel entity)
     {
         var existingFarm = await _repository.GetFirstOrDefaultAsync(
-            predicate: f => f.Id == id,
+            predicate: f => f.Id == entity.EntityId,
             include: farm => farm
                 .Include(f => f.Pets)
                 .Include(f => f.Players)

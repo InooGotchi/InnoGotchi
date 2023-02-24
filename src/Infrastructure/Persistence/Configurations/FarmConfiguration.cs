@@ -18,7 +18,9 @@ public sealed class FarmConfiguration : BaseEntityConfiguration<Farm>
         builder.Property(farm => farm.DeadPets).HasDefaultValue(0);
 
 
-        builder.HasMany(f => f.Pets).WithOne(p => p.Farm).HasForeignKey(p => p.Id).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(f => f.Owner).WithOne(p => p.Farm).HasForeignKey<Farm>(f => f.OwnerId);
+
+        builder.HasMany(f => f.Pets).WithOne(p => p.Farm);
 
         builder.HasMany(f => f.Players).WithMany(p => p.Farms);
     }

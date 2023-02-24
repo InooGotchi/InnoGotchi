@@ -17,7 +17,7 @@ namespace InnoGotchi.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -45,8 +45,7 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 317, DateTimeKind.Utc).AddTicks(9818));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -74,8 +73,7 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 318, DateTimeKind.Utc).AddTicks(2729));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -103,8 +101,7 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 318, DateTimeKind.Utc).AddTicks(5369));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -132,8 +129,7 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 318, DateTimeKind.Utc).AddTicks(7913));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -156,6 +152,7 @@ namespace InnoGotchi.Infrastructure.Migrations
             modelBuilder.Entity("InnoGotchi.Domain.Common.Farm", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AlivePets")
@@ -168,8 +165,7 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 319, DateTimeKind.Utc).AddTicks(226));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -184,6 +180,9 @@ namespace InnoGotchi.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("TotalPets")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -191,12 +190,16 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerId")
+                        .IsUnique();
+
                     b.ToTable("Farms");
                 });
 
             modelBuilder.Entity("InnoGotchi.Domain.Common.Pet", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Age")
@@ -204,10 +207,12 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 321, DateTimeKind.Utc).AddTicks(1526));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FarmId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Happiness")
@@ -238,12 +243,15 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FarmId");
+
                     b.ToTable("Pets");
                 });
 
             modelBuilder.Entity("InnoGotchi.Domain.Common.PetBody", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BodyId")
@@ -251,8 +259,7 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 320, DateTimeKind.Utc).AddTicks(8113));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -279,6 +286,9 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.HasIndex("NoseId");
 
+                    b.HasIndex("PetId")
+                        .IsUnique();
+
                     b.ToTable("PetBodies");
                 });
 
@@ -293,10 +303,12 @@ namespace InnoGotchi.Infrastructure.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 2, 17, 13, 5, 50, 321, DateTimeKind.Utc).AddTicks(7299));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FarmId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImagePath")
@@ -524,7 +536,7 @@ namespace InnoGotchi.Infrastructure.Migrations
                 {
                     b.HasOne("InnoGotchi.Domain.Common.Player", "Owner")
                         .WithOne("Farm")
-                        .HasForeignKey("InnoGotchi.Domain.Common.Farm", "Id")
+                        .HasForeignKey("InnoGotchi.Domain.Common.Farm", "OwnerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -535,7 +547,7 @@ namespace InnoGotchi.Infrastructure.Migrations
                 {
                     b.HasOne("InnoGotchi.Domain.Common.Farm", "Farm")
                         .WithMany("Pets")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("FarmId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -556,12 +568,6 @@ namespace InnoGotchi.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("InnoGotchi.Domain.Common.Pet", "Pet")
-                        .WithOne("Body")
-                        .HasForeignKey("InnoGotchi.Domain.Common.PetBody", "Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("InnoGotchi.Domain.Common.BodyParts.Mouth", "Mouth")
                         .WithMany("PetBodies")
                         .HasForeignKey("MouthId")
@@ -571,6 +577,12 @@ namespace InnoGotchi.Infrastructure.Migrations
                     b.HasOne("InnoGotchi.Domain.Common.BodyParts.Nose", "Nose")
                         .WithMany("PetBodies")
                         .HasForeignKey("NoseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InnoGotchi.Domain.Common.Pet", "Pet")
+                        .WithOne("Body")
+                        .HasForeignKey("InnoGotchi.Domain.Common.PetBody", "PetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
