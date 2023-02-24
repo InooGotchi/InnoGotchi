@@ -11,7 +11,7 @@ public sealed class PlayerConfiguration : BaseEntityConfiguration<Player>
     {
         base.Configure(builder);
 
-        builder.HasOne(p => p.Farm).WithOne(f => f.Owner).HasForeignKey<Farm>(f => f.Id).OnDelete(DeleteBehavior.NoAction);
+        builder.HasOne(p => p.Farm).WithOne(f => f.Owner).OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(p => p.Farms).WithMany(p => p.Players);
     }

@@ -9,6 +9,7 @@ public sealed class Farm : BaseEntity
     public int TotalPets { get; set; }
     public int AlivePets { get; set; }
     public int DeadPets { get; set; }
+    public Guid OwnerId { get; set; }
     public Player Owner { get; set; }
     public IEnumerable<Player> Players { get; set; }
     public IEnumerable<Pet> Pets { get; set; }

@@ -13,6 +13,6 @@ public sealed class Pet : BaseEntity
     public HungerEnum HungerEnum { get; set; }
     public ThirstEnum ThirstEnum { get; set; }
     public int Happiness { get; set; }
-
+    public Guid FarmId { get; set; }
     public Farm Farm { get; set; }
 }

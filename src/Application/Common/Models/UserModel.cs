@@ -2,7 +2,7 @@
 
 namespace InnoGotchi.Application.Common.Models;
 
-public sealed class UserModel : BaseModel
+public sealed class PlayerModel : BaseModel
 {
     public string ImagePath { get; set; } = default!;
 }

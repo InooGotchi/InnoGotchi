@@ -1,22 +1,27 @@
 ﻿using InnoGotchi.Application.Common.Interfaces;
+using Microsoft.Extensions.Options;
+using Web.Configurations;
 
 namespace Web;
 
-public class CheckHostedService : BackgroundService
+public partial class CheckHostedService : BackgroundService
 {
     private readonly IServiceScopeFactory _factory;
     private readonly ILogger<CheckHostedService> _logger;
+    private readonly CheckHostedServiceOptions _options;
 
     public CheckHostedService(
+        IOptions<CheckHostedServiceOptions> options,
         ILogger<CheckHostedService> logger,
         IServiceScopeFactory factory)
     {
+        _options = options.Value;
         _logger = logger;
         _factory = factory;
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        PeriodicTimer timer = new(TimeSpan.FromSeconds(5));
+        PeriodicTimer timer = new(TimeSpan.FromSeconds(_options.Interval));
 
         while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
         {

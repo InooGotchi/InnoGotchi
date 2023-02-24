@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using CleanArchitecture.Application.Common.Interfaces;
 using InnoGotchi.Application.Common.Interfaces;
+using InnoGotchi.Infrastructure.Identity.Services.Configurations;
 using InnoGotchi.Infrastructure.Persistence;
 using InnoGotchi.Infrastructure.Services;
 using InnoGotchi.Web.Services;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Web;
-using static InnoGotchi.Infrastructure.Services.TokenService;
+using Web.Configurations;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -33,6 +34,9 @@ public static class ConfigureServices
         var jwtConfiguration = configuration.GetSection("Jwt");
 
         services.Configure<JwtTokenOptions>(jwtConfiguration);
+
+        services.Configure<CheckHostedServiceOptions>(configuration.GetSection("Job"));
+
 
         services.Configure<JwtBearerOptions>(options =>
         {

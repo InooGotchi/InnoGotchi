@@ -23,7 +23,7 @@ public sealed class PetConfiguration : BaseEntityConfiguration<Pet>
 
         builder.HasOne(p => p.Farm).WithMany(p => p.Pets);
 
-        builder.HasOne(p => p.Body).WithOne(o => o.Pet).HasForeignKey<PetBody>(p => p.Id).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(p => p.Body).WithOne(o => o.Pet);
     }
 }
 

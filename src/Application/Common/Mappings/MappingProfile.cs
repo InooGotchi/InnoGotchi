@@ -10,7 +10,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Player, UserModel>()
+        CreateMap<Player, PlayerModel>()
             .ReverseMap();
 
         CreateMap<Farm, FarmViewModel>();

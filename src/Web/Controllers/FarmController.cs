@@ -5,44 +5,41 @@ using Microsoft.Extensions.DependencyInjection.Controllers.Base;
 
 namespace Microsoft.Extensions.DependencyInjection.Controllers;
 
-public sealed class FarmsController : ApiController
+public sealed class FarmController : ApiController
 {
     private readonly IFarmService _service;
 
-    public FarmsController(IFarmService service)
-    {
-        _service = service;
-    }
+    public FarmController(IFarmService service) => _service = service;
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<FarmViewModel>> GetByIdAsync(Guid id)
     {
         var farmViewModel = await _service.GetByIdAsync(id);
         return Ok(farmViewModel);
     }
 
-    [HttpGet]
+    [HttpGet("All")]
     public async Task<ActionResult<IList<FarmViewModel>>> GetAllAsync()
     {
         var farmViewModels = await _service.GetAllAsync();
         return Ok(farmViewModels);
     }
 
-    [HttpPost]
+    [HttpPost("Create")]
     public async Task<ActionResult<FarmViewModel>> CreateAsync(CreateUpdateFarmModel farm)
     {
         var created = await _service.InsertAsync(farm);
-        return CreatedAtAction("GetByIdAsync", created, new {id = created.Id});
+        return CreatedAtAction("GetByIdAsync", created, new { id = created.Id });
     }
 
-    [HttpPost("id")]
-    public async Task<ActionResult<FarmViewModel>> UpdateAsync(Guid id, CreateUpdateFarmModel farm)
+    [HttpPut("Update")]
+    public async Task<ActionResult<FarmViewModel>> UpdateAsync(CreateUpdateFarmModel farm)
     {
-        var updated = await _service.UpdateAsync(id, farm);
+        var updated = await _service.UpdateAsync(farm);
         return Ok(updated);
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("Delete")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
         await _service.DeleteAsync(id);

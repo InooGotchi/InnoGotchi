@@ -6,6 +6,7 @@ public sealed class Player : BaseEntity
 {
     public Guid ApplicationUserId { get; set; }
     public string ImagePath { get; set; }
+    public Guid FarmId { get; set; }
     public Farm Farm { get; set; }
     public IEnumerable<Farm> Farms { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using InnoGotchi.Infrastructure.Identity;
+﻿using InnoGotchi.Domain.Common;
+using InnoGotchi.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,8 @@ public class ApplicationDbContextInitialiser
         {
             if (_context.Database.IsSqlServer())
             {
-                // await _context.Database.MigrateAsync();
+                await _context.Database.MigrateAsync();
+                await SeedAsync();
             }
         }
         catch (Exception ex)
@@ -39,7 +41,7 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
-            // await TrySeedAsync();
+            await TrySeedAsync();
         }
         catch (Exception ex)
         {
@@ -56,30 +58,64 @@ public class ApplicationDbContextInitialiser
 
         if (_userManager.Users.All(u => u.UserName != user.UserName))
         {
-            await _userManager.CreateAsync(user, "User1!'");
+            await _userManager.CreateAsync(user, "User111222'");
         }
+        user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == user.UserName);
 
-        /// LEAVED AS EXAMPLE
 
         // Default data
         // Seed, if necessary
-        // Add InnoGotchi default data if needed
 
-        //if (!_context.TodoLists.Any())
-        //{
-        //    _context.TodoLists.Add(new TodoList
-        //    {
-        //        Title = "Todo List",
-        //        Items =
-        //        {
-        //            new TodoItem { Title = "Make a todo list 📃" },
-        //            new TodoItem { Title = "Check off the first item ✅" },
-        //            new TodoItem { Title = "Realise you've already done two things on the list! 🤯"},
-        //            new TodoItem { Title = "Reward yourself with a nice, long nap 🏆" },
-        //        }
-        //    });
+        if (!_context.Farms.Any())
+        {
+            var player = new Player()
+            {
+                Id = Guid.NewGuid(),
+                CreatedBy = user.Id,
+                ApplicationUserId = user.Id,
+                ImagePath = "Seeded",
+            };
 
-        //    await _context.SaveChangesAsync();
-        //}
+            var farm = new Farm()
+            {
+                Id = Guid.NewGuid(),
+                CreatedBy = player.ApplicationUserId,
+                Name = "SeedFarm",
+                Capacity = 4,
+                TotalPets = 2,
+                AlivePets = 2,
+                OwnerId = player.Id,
+            };
+
+            var pets = new List<Pet>()
+            {
+                new Pet
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = player.ApplicationUserId,
+                    Name = "SeededPet",
+                    Age = 0,
+                    NextDrinkDate = DateTime.UtcNow.AddDays(5),
+                    NextFeedDate = DateTime.UtcNow.AddDays(5),
+                    FarmId = farm.Id
+                },
+                new Pet
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = player.ApplicationUserId,
+                    Name = "SeededPet2",
+                    Age = 0,
+                    NextDrinkDate = DateTime.UtcNow.AddDays(5),
+                    NextFeedDate = DateTime.UtcNow.AddDays(5),
+                    FarmId = farm.Id
+                },
+            };
+
+            _context.Farms.Add(farm);
+            _context.Players.Add(player);
+            _context.Pets.AddRange(pets);
+
+            _context.SaveChanges();
+        }
     }
 }

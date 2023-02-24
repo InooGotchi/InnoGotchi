@@ -22,7 +22,7 @@ public class PetService : IPetService
     public async Task<PetViewModel> GetByIdAsync(Guid id)
     {
         var pet = await _repository.GetFirstOrDefaultAsync(
-            predicate: p => p.Id == Guid.Empty,
+            predicate: p => p.Id == id,
             include: p => p.Include(p => p.Body)
                 .ThenInclude(pb => pb.Body)
                 .Include(p => p.Body)
@@ -56,6 +56,8 @@ public class PetService : IPetService
                 pet.HungerEnum++;
         }
 
+
+
         return pets.Any() ? await _repository.SaveChangesAsync() : default;
     }
 
@@ -66,10 +68,10 @@ public class PetService : IPetService
         return _mapper.Map<Pet, PetViewModel>(insertedPetEntry.Entity);
     }
 
-    public async Task<PetViewModel> UpdateAsync(Guid id, CreateUpdatePetModel entity)
+    public async Task<PetViewModel> UpdateAsync(CreateUpdatePetModel entity)
     {
         var existingPet = await _repository.GetFirstOrDefaultAsync(
-            predicate: p => p.Id == Guid.Empty,
+            predicate: p => p.Id == entity.EntityId,
             include: p => p.Include(p => p.Body)
                 .ThenInclude(pb => pb.Body)
                 .Include(p => p.Body)

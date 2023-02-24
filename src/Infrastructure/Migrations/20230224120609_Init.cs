@@ -55,7 +55,7 @@ namespace InnoGotchi.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 317, DateTimeKind.Utc).AddTicks(9818)),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Url = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
@@ -70,7 +70,7 @@ namespace InnoGotchi.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 318, DateTimeKind.Utc).AddTicks(2729)),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Url = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
@@ -85,7 +85,7 @@ namespace InnoGotchi.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 318, DateTimeKind.Utc).AddTicks(5369)),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Url = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
@@ -100,7 +100,7 @@ namespace InnoGotchi.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 318, DateTimeKind.Utc).AddTicks(7913)),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Url = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
@@ -117,7 +117,8 @@ namespace InnoGotchi.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 321, DateTimeKind.Utc).AddTicks(7299)),
+                    FarmId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -241,15 +242,16 @@ namespace InnoGotchi.Infrastructure.Migrations
                     TotalPets = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     AlivePets = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     DeadPets = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 319, DateTimeKind.Utc).AddTicks(226)),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Farms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Farms_Players_Id",
-                        column: x => x.Id,
+                        name: "FK_Farms_Players_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "Players",
                         principalColumn: "Id");
                 });
@@ -290,15 +292,16 @@ namespace InnoGotchi.Infrastructure.Migrations
                     HungerEnum = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     ThirstEnum = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     Happiness = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 321, DateTimeKind.Utc).AddTicks(1526)),
+                    FarmId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pets_Farms_Id",
-                        column: x => x.Id,
+                        name: "FK_Pets_Farms_FarmId",
+                        column: x => x.FarmId,
                         principalTable: "Farms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -314,7 +317,7 @@ namespace InnoGotchi.Infrastructure.Migrations
                     EyesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MouthId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BodyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 2, 17, 13, 5, 50, 320, DateTimeKind.Utc).AddTicks(8113)),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -345,11 +348,11 @@ namespace InnoGotchi.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PetBodies_Pets_Id",
-                        column: x => x.Id,
+                        name: "FK_PetBodies_Pets_PetId",
+                        column: x => x.PetId,
                         principalTable: "Pets",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -397,6 +400,12 @@ namespace InnoGotchi.Infrastructure.Migrations
                 column: "PlayersId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Farms_OwnerId",
+                table: "Farms",
+                column: "OwnerId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PetBodies_BodyId",
                 table: "PetBodies",
                 column: "BodyId");
@@ -415,6 +424,17 @@ namespace InnoGotchi.Infrastructure.Migrations
                 name: "IX_PetBodies_NoseId",
                 table: "PetBodies",
                 column: "NoseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PetBodies_PetId",
+                table: "PetBodies",
+                column: "PetId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pets_FarmId",
+                table: "Pets",
+                column: "FarmId");
         }
 
         /// <inheritdoc />

@@ -10,7 +10,7 @@ public class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity
     public virtual void Configure(EntityTypeBuilder<TEntity> builder)
     {
         builder.HasKey(e => e.Id);
-        builder.Property(e => e.Created).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnAdd();
+        builder.Property(e => e.Created).ValueGeneratedOnAdd();
     }
 }
 
