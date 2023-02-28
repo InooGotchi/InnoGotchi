@@ -50,6 +50,7 @@ public class FarmService : IFarmService
 
     public async Task<FarmViewModel> InsertAsync(CreateUpdateFarmModel entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         var farm = _mapper.Map<CreateUpdateFarmModel, Farm>(entity);
         var insertedFarmEntry = await _repository.InsertAsync(farm);
         return _mapper.Map<Farm, FarmViewModel>(insertedFarmEntry);
@@ -57,12 +58,19 @@ public class FarmService : IFarmService
 
     public async Task<FarmViewModel> UpdateAsync(Guid id, CreateUpdateFarmModel entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         var existingFarm = await _repository.GetFirstOrDefaultAsync(
             predicate: f => f.Id == id,
             include: farm => farm
                 .Include(f => f.Pets)
                 .Include(f => f.Colaborators)
                 .Include(f => f.Owner));
+        
+        if (existingFarm is null)
+        {
+            throw new NotFoundException(nameof(existingFarm), id);
+        }
+        
         _mapper.Map<CreateUpdateFarmModel, Farm>(entity, existingFarm);
         var updatedFarmEntry = await _repository.UpdateAsync(existingFarm);
         return _mapper.Map<Farm, FarmViewModel>(updatedFarmEntry);
@@ -71,6 +79,12 @@ public class FarmService : IFarmService
     public async Task DeleteAsync(Guid id)
     {
         var farm = await _repository.GetFirstOrDefaultAsync(f => f.Id == id);
+        
+        if (farm is null)
+        {
+            throw new NotFoundException(nameof(farm), id);
+        }
+        
         await _repository.DeleteAsync(farm);
     }
 
